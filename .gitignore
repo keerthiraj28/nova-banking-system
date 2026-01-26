@@ -1,0 +1,22 @@
+# Eclipse
+.metadata/
+.settings/
+.project
+.classpath
+
+# Compiled files
+bin/
+target/
+
+# Environment files
+.env
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Ignore database crendentials and local configuration
+src/db.properties
