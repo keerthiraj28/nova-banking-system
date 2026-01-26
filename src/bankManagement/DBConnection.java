@@ -18,9 +18,7 @@ public class DBConnection {
 
             // Load db.properties from classpath
             Properties props = new Properties();
-            InputStream is = DBConnection.class
-                    .getClassLoader()
-                    .getResourceAsStream("db.properties");
+            InputStream is = DBConnection.class.getClassLoader().getResourceAsStream("db.properties");
 
             if (is == null) {
                 throw new RuntimeException("db.properties not found in classpath");
