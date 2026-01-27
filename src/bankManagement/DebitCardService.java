@@ -86,8 +86,6 @@ public class DebitCardService {
 
     // ---------------- BLOCK DEBIT CARD ----------------
     public void blockDebitCard(Account acc) {
-
-    	sc.nextLine(); //buffer clear
     	
     	if (acc.getDebitCardStatus() != DebitCardStatus.ACTIVE) {
     	    System.out.println("Debit card is not active");
@@ -100,7 +98,7 @@ public class DebitCardService {
         System.out.print("Enter Password: ");
         String password = sc.nextLine(); // hash comparison later
 
-        if (!acc.getDebitCardNumber().equals(cardNo) || !acc.getPassword().equals(password)) {
+        if (!acc.getDebitCardNumber().equals(cardNo) || !PasswordUtil.checkPassword(password, acc.getPassword())) {
             System.out.println("Invalid card number or password");
             return;
         }
@@ -128,8 +126,6 @@ public class DebitCardService {
 
     // ---------------- UNBLOCK DEBIT CARD ----------------
     public void unblockDebitCard(Account acc) {
-
-    	sc.nextLine(); //buffer clear
     	
     	if (acc.getDebitCardStatus() != DebitCardStatus.BLOCKED) {
     	    System.out.println("Debit card is not blocked");
@@ -143,8 +139,7 @@ public class DebitCardService {
         System.out.print("Enter Password: ");
         String password = sc.nextLine(); // hash comparison later
 
-        if (!acc.getDebitCardNumber().equals(cardNo) ||
-            !acc.getPassword().equals(password)) {
+        if (!acc.getDebitCardNumber().equals(cardNo) || !PasswordUtil.checkPassword(password, acc.getPassword())) {
             System.out.println("Invalid card number or password");
             return;
         }

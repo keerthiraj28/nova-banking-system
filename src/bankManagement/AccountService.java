@@ -265,8 +265,25 @@ public class AccountService {
         System.out.print("Create Username: ");
         acc.setUsername(sc.nextLine());
 
-        System.out.print("Create Password: ");
-        acc.setPassword(sc.nextLine());
+        String rawPassword;
+        while (true) {
+            System.out.print("Create Password: ");
+            rawPassword = sc.nextLine();
+
+            if (!PasswordUtil.isValidPassword(rawPassword)) {
+                System.out.println(
+                    "Password must be at least 8 characters long and include:\n" +
+                    "- Uppercase letter\n" +
+                    "- Lowercase letter\n" +
+                    "- Number\n" +
+                    "- Special character (@#$!%*?&)"
+                );
+                continue;
+            }
+            break;
+        }
+
+        acc.setPassword(PasswordUtil.hashPassword(rawPassword));
 
         try {
 			dao.saveAccount(acc);
@@ -299,7 +316,7 @@ public class AccountService {
         Account storedAccount = map.get(accNo);
 
         // Password validation
-        if (!storedAccount.getPassword().equals(password)) {
+        if (!PasswordUtil.checkPassword(password, storedAccount.getPassword())) {
             System.out.println("Invalid password");
             return;
         }

@@ -16,7 +16,16 @@ public class BankApp {
         AccountService accountService = new AccountService(accountMap, accountDAO, debitCardService, sc);
         TransactionService transactionService = new TransactionService(accountDAO, sc);
         ProfileService profileService = new ProfileService(accountDAO, sc);
-        
+        AuthService authService = new AuthService(accountMap, sc);
+
+        // LOAD ACCOUNTS
+        try {
+            accountMap.putAll(accountDAO.loadAccounts());
+        } catch (Exception e) {
+            System.out.println("Failed to load data. Please try again.");
+            e.printStackTrace();
+            return;
+        }
 
         // -------- WELCOME SCREEN --------
         System.out.println("==================================");
@@ -31,14 +40,6 @@ public class BankApp {
         }
 
         while (true) {
-        	
-        	try {
-                accountMap = accountDAO.loadAccounts();
-            } catch (Exception e) {
-                System.out.println("Failed to load data. Please try again.");
-                e.printStackTrace();
-                return;
-            }
 
             System.out.println("\n--- MAIN MENU ---");
             System.out.println("1. Login");
@@ -52,27 +53,10 @@ public class BankApp {
             switch (choice) {
 
                 case 1: { // LOGIN
-                    System.out.print("Enter Username: ");
-                    String username = sc.nextLine();
+                    Account loggedInAccount = authService.login();
+                    if (loggedInAccount == null)
+                    	return;
 
-                    System.out.print("Enter Password: ");
-                    String password = sc.nextLine();
-
-                    Account loggedInAccount = null;
-
-                    for (Account acc : accountMap.values()) {
-                        if (acc.getUsername().equals(username) && acc.getPassword().equals(password)) {
-                            loggedInAccount = acc;
-                            break;
-                        }
-                    }
-
-                    if (loggedInAccount == null) {
-                        System.out.println("Invalid username or password.");
-                        break;
-                    }
-
-                    System.out.println("Login successful!");
                     System.out.println("Welcome, " + loggedInAccount.getName());
 
                     // -------- USER DASHBOARD --------
@@ -144,7 +128,7 @@ public class BankApp {
 			System.out.print("Choose: ");
 			
 			int choice = sc.nextInt();
-			sc.nextLine();
+			sc.nextLine(); // clear buffer
 			
 			switch (choice) {
 				case 1 -> profileService.nameCorrection(acc);
@@ -172,10 +156,10 @@ public class BankApp {
 			System.out.print("Choose: ");
 			
 			int choice = sc.nextInt();
-			sc.nextLine();
+			sc.nextLine(); // clear buffer
 			
 			switch (choice) {
-				case 1 -> debitCardService.issueInitialCard(acc);
+				case 1 -> debitCardService.applyDebitCard(acc);
 				case 2 -> debitCardService.blockDebitCard(acc);
 				case 3 -> debitCardService.unblockDebitCard(acc);
 				case 4 -> back = true;
@@ -183,5 +167,7 @@ public class BankApp {
 			}
 		}
 	}
+    
+    
 
 }

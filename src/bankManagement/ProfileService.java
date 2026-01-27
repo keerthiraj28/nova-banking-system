@@ -118,9 +118,10 @@ public class ProfileService {
 	
    		System.out.print("Enter Old Password: ");
         oldPass = sc.nextLine();
-        if (!acc.getPassword().equals(oldPass)) {
-        	System.out.println("Incorrect password. Try again");
-        	return;
+        
+        if (!PasswordUtil.checkPassword(oldPass, acc.getPassword())) {
+            System.out.println("Incorrect password.");
+            return;
         }
         
         
@@ -128,6 +129,17 @@ public class ProfileService {
     		
     		System.out.print("Enter New Password: ");
             newPass = sc.nextLine();
+            
+            if (!PasswordUtil.isValidPassword(newPass)) {
+                System.out.println(
+                    "Password must be at least 8 characters long and include:\n" +
+                    "- Uppercase letter\n" +
+                    "- Lowercase letter\n" +
+                    "- Number\n" +
+                    "- Special character"
+                );
+                return;
+            }
 
             System.out.print("Confirm New Password: ");
             String confirmPass = sc.nextLine();
@@ -140,7 +152,7 @@ public class ProfileService {
     		
     	}
         
-        acc.setPassword(newPass);
+    	acc.setPassword(PasswordUtil.hashPassword(newPass));
         
         try {
 			dao.updateAccount(acc);
